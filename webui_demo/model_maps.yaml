@@ -1,0 +1,8 @@
+base_model:
+  toonyou: toonyou.safetensors
+  realistic_vision: realistic_vision.safetensors
+  XXMix_9realistic: XXMix_9realistic.safetensors
+motion_module:
+  mm_sd_v15_v2: mm_sd_v15_v2.ckpt
+motion_lora_module:
+  pan_left: v2_lora_PanLeft.ckpt
