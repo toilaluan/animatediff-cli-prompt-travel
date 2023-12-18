@@ -1,8 +1,10 @@
 base_model:
-  toonyou: toonyou.safetensors
-  realistic_vision: realistic_vision.safetensors
-  XXMix_9realistic: XXMix_9realistic.safetensors
+  # toonyou: toonyou.safetensors
+  # realistic_vision: realistic_vision.safetensors
+  # XXMix_9realistic: XXMix_9realistic.safetensors
+  counterfeit: Counterfeit.safetensors
 motion_module:
-  mm_sd_v15_v2: mm_sd_v15_v2.ckpt
+  mm_sd_v15_v2: animatediff/mm_sd_v15_v2.ckpt
 motion_lora_module:
-  pan_left: v2_lora_PanLeft.ckpt
+  pan_left: animatediff/v2_lora_PanLeft.ckpt
+  zoom_in: animatediff/v2_lora_ZoomIn.ckpt
