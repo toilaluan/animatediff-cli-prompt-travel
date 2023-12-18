@@ -239,3 +239,10 @@ src/animatediff/_version.py
 # envrc
 .env*
 !.envrc.example
+
+*.png
+*.jpg
+*.json
+*.csv
+*.mp4
+!assets
