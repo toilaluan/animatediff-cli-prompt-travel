@@ -2,7 +2,7 @@ base_model:
   # toonyou: toonyou.safetensors
   # realistic_vision: realistic_vision.safetensors
   # XXMix_9realistic: XXMix_9realistic.safetensors
-  counterfeit: Counterfeit.safetensors
+  counterfeit: Counterfeit-V3.0_fix_fp16.safetensors
 motion_module:
   mm_sd_v15_v2: animatediff/mm_sd_v15_v2.ckpt
 motion_lora_module:

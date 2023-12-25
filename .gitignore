@@ -246,3 +246,10 @@ src/animatediff/_version.py
 *.csv
 *.mp4
 !assets
+
+*.safetensors
+*.jpeg
+*.mp4
+*.swp
+*.pth
+*.json

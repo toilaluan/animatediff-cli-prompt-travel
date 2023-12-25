@@ -383,7 +383,8 @@ def generate(
         )
 
         torch.cuda.empty_cache()
-
+    g_pipeline.load_textual_inversion('data/EasyNegativeV2.safetensors')
+    print("Loaded Easy Negative v3")
     apply_lcm_lora = False
     if model_config.lcm_map:
         if "enable" in model_config.lcm_map:
