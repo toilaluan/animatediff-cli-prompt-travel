@@ -1,0 +1,468 @@
+{
+  "319": {
+    "inputs": {
+      "stop_at_clip_layer": -2,
+      "clip": [
+        "509",
+        1
+      ]
+    },
+    "class_type": "CLIPSetLastLayer"
+  },
+  "320": {
+    "inputs": {
+      "text": "(worst quality, low quality:1.4)",
+      "clip": [
+        "319",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "321": {
+    "inputs": {
+      "text": "best quality, masterpiece, a girl, cry, shy",
+      "clip": [
+        "319",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "322": {
+    "inputs": {
+      "vae_name": "BerrysMix.vae.safetensors"
+    },
+    "class_type": "VAELoader"
+  },
+  "325": {
+    "inputs": {
+      "x": 0,
+      "y": 0,
+      "feather": 0,
+      "samples_to": [
+        "497",
+        0
+      ],
+      "samples_from": [
+        "350",
+        0
+      ]
+    },
+    "class_type": "LatentComposite"
+  },
+  "334": {
+    "inputs": {
+      "samples": [
+        "528",
+        0
+      ],
+      "vae": [
+        "476",
+        0
+      ]
+    },
+    "class_type": "VAEDecode"
+  },
+  "350": {
+    "inputs": {
+      "pixels": [
+        "517",
+        0
+      ],
+      "vae": [
+        "322",
+        0
+      ]
+    },
+    "class_type": "VAEEncode"
+  },
+  "465": {
+    "inputs": {
+      "filename_prefix": "Highres/Highresframes",
+      "images": [
+        "468",
+        0
+      ]
+    },
+    "class_type": "SaveImage"
+  },
+  "466": {
+    "inputs": {
+      "pixels": [
+        "471",
+        0
+      ],
+      "vae": [
+        "476",
+        0
+      ]
+    },
+    "class_type": "VAEEncode"
+  },
+  "467": {
+    "inputs": {
+      "seed": 105651828675208,
+      "steps": 4,
+      "cfg": 7.5,
+      "sampler_name": "euler_ancestral",
+      "scheduler": "karras",
+      "denoise": 0.42,
+      "model": [
+        "513",
+        0
+      ],
+      "positive": [
+        "512",
+        0
+      ],
+      "negative": [
+        "511",
+        0
+      ],
+      "latent_image": [
+        "466",
+        0
+      ]
+    },
+    "class_type": "KSampler"
+  },
+  "468": {
+    "inputs": {
+      "samples": [
+        "467",
+        0
+      ],
+      "vae": [
+        "476",
+        0
+      ]
+    },
+    "class_type": "VAEDecode"
+  },
+  "469": {
+    "inputs": {
+      "model_name": "4x_foolhardy_Remacri.pth"
+    },
+    "class_type": "UpscaleModelLoader"
+  },
+  "470": {
+    "inputs": {
+      "upscale_model": [
+        "469",
+        0
+      ],
+      "image": [
+        "334",
+        0
+      ]
+    },
+    "class_type": "ImageUpscaleWithModel"
+  },
+  "471": {
+    "inputs": {
+      "upscale_method": "nearest-exact",
+      "scale_by": 0.35000000000000003,
+      "image": [
+        "470",
+        0
+      ]
+    },
+    "class_type": "ImageScaleBy"
+  },
+  "476": {
+    "inputs": {
+      "vae_name": "BerrysMix.vae.safetensors"
+    },
+    "class_type": "VAELoader"
+  },
+  "485": {
+    "inputs": {
+      "blend_factor": 1,
+      "samples1": [
+        "325",
+        0
+      ],
+      "samples2": [
+        "497",
+        0
+      ]
+    },
+    "class_type": "LatentBlend"
+  },
+  "487": {
+    "inputs": {
+      "frame_rate": 10,
+      "loop_count": 0,
+      "filename_prefix": "Gif/Gif",
+      "format": "image/gif",
+      "pingpong": false,
+      "save_image": true,
+      "ad_gif_preview__0": "/view?filename=Gif_00001_.gif&subfolder=Gif&type=output&format=image%2Fgif",
+      "images": [
+        "334",
+        0
+      ]
+    },
+    "class_type": "ADE_AnimateDiffCombine"
+  },
+  "491": {
+    "inputs": {
+      "filename_prefix": "HighresInterp/HRI",
+      "images": [
+        "532",
+        0
+      ]
+    },
+    "class_type": "SaveImage"
+  },
+  "492": {
+    "inputs": {
+      "image": "yoimiya-init-ref.jpg",
+      "upload": "image"
+    },
+    "class_type": "LoadImage"
+  },
+  "495": {
+    "inputs": {
+      "frame_rate": 10,
+      "loop_count": 0,
+      "filename_prefix": "AnimateDiff",
+      "format": "image/gif",
+      "pingpong": false,
+      "save_image": true,
+      "ad_gif_preview__0": "/view?filename=AnimateDiff_00001_.gif&subfolder=&type=output&format=image%2Fgif",
+      "images": [
+        "468",
+        0
+      ]
+    },
+    "class_type": "ADE_AnimateDiffCombine"
+  },
+  "497": {
+    "inputs": {
+      "width": [
+        "520",
+        0
+      ],
+      "height": [
+        "519",
+        0
+      ],
+      "batch_size": [
+        "501",
+        2
+      ]
+    },
+    "class_type": "ADE_EmptyLatentImageLarge"
+  },
+  "498": {
+    "inputs": {
+      "number_type": "integer",
+      "number": 20
+    },
+    "class_type": "Constant Number"
+  },
+  "499": {
+    "inputs": {
+      "number_type": "float",
+      "number": 1.6
+    },
+    "class_type": "Constant Number"
+  },
+  "500": {
+    "inputs": {
+      "number_type": "integer",
+      "number": 10
+    },
+    "class_type": "Constant Number"
+  },
+  "501": {
+    "inputs": {
+      "operation": "multiplication",
+      "number_a": [
+        "500",
+        0
+      ],
+      "number_b": [
+        "499",
+        0
+      ]
+    },
+    "class_type": "Number Operation"
+  },
+  "502": {
+    "inputs": {
+      "operation": "division",
+      "number_a": [
+        "498",
+        0
+      ],
+      "number_b": [
+        "500",
+        0
+      ]
+    },
+    "class_type": "Number Operation"
+  },
+  "506": {
+    "inputs": {
+      "frame_rate": [
+        "498",
+        2
+      ],
+      "loop_count": 0,
+      "filename_prefix": "HighresInterpGif/HRIGif",
+      "format": "image/gif",
+      "pingpong": false,
+      "save_image": true,
+      "ad_gif_preview__0": "/view?filename=HRIGif_00001_.gif&subfolder=HighresInterpGif&type=output&format=image%2Fgif",
+      "images": [
+        "532",
+        0
+      ]
+    },
+    "class_type": "ADE_AnimateDiffCombine"
+  },
+  "507": {
+    "inputs": {
+      "context_length": 16,
+      "context_stride": 4,
+      "context_overlap": 4,
+      "context_schedule": "uniform",
+      "closed_loop": true
+    },
+    "class_type": "ADE_AnimateDiffUniformContextOptions"
+  },
+  "509": {
+    "inputs": {
+      "ckpt_name": "counterfeitv30.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple"
+  },
+  "511": {
+    "inputs": {
+      "text": "(worst quality, low quality:1.4),",
+      "clip": [
+        "319",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "512": {
+    "inputs": {
+      "text": "best quality, masterpiece, a girl, cry, shy",
+      "clip": [
+        "319",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "513": {
+    "inputs": {
+      "model_name": "mm_sd_v15_v2.ckpt",
+      "beta_schedule": "sqrt_linear (AnimateDiff)",
+      "motion_scale": 1,
+      "apply_v2_models_properly": false,
+      "model": [
+        "509",
+        0
+      ],
+      "context_options": [
+        "507",
+        0
+      ]
+    },
+    "class_type": "ADE_AnimateDiffLoaderWithContext"
+  },
+  "517": {
+    "inputs": {
+      "mode": "resize",
+      "supersample": "false",
+      "resampling": "lanczos",
+      "rescale_factor": 1,
+      "resize_width": [
+        "520",
+        0
+      ],
+      "resize_height": [
+        "519",
+        0
+      ],
+      "image": [
+        "492",
+        0
+      ]
+    },
+    "class_type": "Image Resize"
+  },
+  "519": {
+    "inputs": {
+      "Value": 512
+    },
+    "class_type": "Integer"
+  },
+  "520": {
+    "inputs": {
+      "Value": 512
+    },
+    "class_type": "Integer"
+  },
+  "528": {
+    "inputs": {
+      "seed": 105651828675208,
+      "steps": 20,
+      "cfg": 7.5,
+      "sampler_name": "euler_ancestral",
+      "scheduler": "normal",
+      "denoise": 0.6,
+      "model": [
+        "513",
+        0
+      ],
+      "positive": [
+        "321",
+        0
+      ],
+      "negative": [
+        "320",
+        0
+      ],
+      "latent_image": [
+        "485",
+        0
+      ]
+    },
+    "class_type": "KSampler"
+  },
+  "532": {
+    "inputs": {
+      "ckpt_name": "rife46.pth",
+      "clear_cache_after_n_frames": 10,
+      "multiplier": [
+        "502",
+        2
+      ],
+      "fast_mode": true,
+      "ensemble": true,
+      "scale_factor": 1,
+      "frames": [
+        "468",
+        0
+      ]
+    },
+    "class_type": "RIFE VFI"
+  },
+  "533": {
+    "inputs": {
+      "filename_prefix": "Frames/Frames",
+      "images": [
+        "334",
+        0
+      ]
+    },
+    "class_type": "SaveImage"
+  }
+}

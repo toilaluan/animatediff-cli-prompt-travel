@@ -12,7 +12,7 @@ import moviepy.editor as mp
 import pandas as pd
 import requests
 import yaml
-from clip_interrogator import Config, Interrogator
+#from clip_interrogator import Config, Interrogator
 from PIL import Image
 
 from src.animatediff.cli import generate
@@ -32,6 +32,16 @@ def gif_to_mp4(gif_filename, mp4_filename):
     # Write the clip as an MP4 file
     clip.write_videofile(mp4_filename)
 
+def resize_divisible(image, max_size=1024, divisible=16):
+    W, H = image.size
+    if W > H:
+        W, H = max_size, int(max_size * H / W)
+    else:
+        W, H = int(max_size * W / H), max_size
+    W = W - W % divisible
+    H = H - H % divisible
+    image = image.resize((W, H))
+    return image
 
 
 def pil_image_to_base64(pil_image):
@@ -61,6 +71,50 @@ os.makedirs(CONTROL_IMAGE_DIR, exist_ok=True)
 #     prompt = ci.interrogate_fast(image)
 #     return prompt
 # Define a function to process the input configuration
+from PIL import Image
+
+def center_crop_image(image, ratio):
+    # Load the image
+    width, height = image.size
+
+    # Determine new dimensions based on the ratio
+    if ratio == "square":
+        new_size = min(width, height)
+        left = (width - new_size)/2
+        top = (height - new_size)/2
+        right = (width + new_size)/2
+        bottom = (height + new_size)/2
+    elif ratio == "wide":
+        # Assuming a 16:9 ratio for "wide"
+        if width / height > 16/9:
+            new_width = height * 16/9
+            new_height = height
+        else:
+            new_width = width
+            new_height = width * 9/16
+        left = (width - new_width)/2
+        top = (height - new_height)/2
+        right = (width + new_width)/2
+        bottom = (height + new_height)/2
+    elif ratio == "tall":
+        # Assuming a 9:16 ratio for "tall"
+        if height / width > 16/9:
+            new_height = width * 16/9
+            new_width = width
+        else:
+            new_height = height
+            new_width = height * 9/16
+        left = (width - new_width)/2
+        top = (height - new_height)/2
+        right = (width + new_width)/2
+        bottom = (height + new_height)/2
+    else:
+        raise ValueError("Unsupported ratio. Choose 'square', 'wide', or 'tall'.")
+
+    # Crop the image
+    cropped_image = image.crop((left, top, right, bottom))
+
+    return cropped_image
 
 def get_prompt(image: Image.Image):
     url = "https://ai-api.sankakucomplex.com/sdapi/v1/tagging"
@@ -84,14 +138,21 @@ def process_config(
     length: int,
     use_v2: bool,
     denoise_strength: float,
+    v1_duration: float,
+    ratio: str = "square",
 ):
+    # conditional_image = resize_divisible(conditional_image, 1024)
+    # conditional_image = center_crop_image(conditional_image, ratio)
+    # conditional_image.save("temppp.webp")
+
     if not use_v2:
         prompt = head_prompt
-        save_image_path = "/home/ai/luantt/animatediff-cli-prompt-travel/temp/conditional_image_comfyui.png"
+        save_image_path = "/home/ai/animatediff-cli-prompt-travel/conditional_image_comfyui.png"
         conditional_image.save(save_image_path)
-        output_fn = call_comfy(save_image_path, prompt, denoise_strength)
-        print(output_fn)
+        output_fn = call_comfy(save_image_path, prompt, denoise_strength, v1_duration, length)
+        print("output fn", output_fn)
         start_waiting = time.time()
+
         output_files = []
         while time.time() - start_waiting < 720 and not output_files:
             output_files = glob.glob(f"{output_fn}*.gif")
@@ -100,7 +161,8 @@ def process_config(
         output_mp4_file = "temp/output.mp4"
         time.sleep(10)
         gif_to_mp4(output_files[0], output_mp4_file)
-        shutil.rmtree(SAVE_DIR)
+        shutil.rmtree(SAVE_DIR, ignore_errors=True)
+        os.makedirs(SAVE_DIR, exist_ok=True)
         os.system(
             f"cd Real-ESRGAN && python inference_realesrgan_video.py -i ../{output_mp4_file} -n realesr-animevideov3 -s 2 -o ../{SAVE_DIR}/upscaled"
         )
@@ -204,6 +266,9 @@ with gr.Blocks() as app:
     with gr.Row():
         with gr.Column():
             reference_image = gr.Image(label="Reference Image", type="pil", value="assets/images/conditional_image_comfyui.png")
+            ratio = gr.Dropdown(["square", "wide", "tall"], value="square")
+            v1_duration = gr.Slider(minimum=1.0, maximum=10.0, value=2.0)
+            length = gr.Slider(label="length", minimum=8, maximum=512, value=16, step=16)
             with gr.Accordion("Prompt Travel Settings", open=True):
                 head_prompt = gr.Textbox(
                     label="head_prompt",
@@ -229,14 +294,13 @@ with gr.Blocks() as app:
                     label="n_prompt",
                     value="EasyNegativeV2",
                 )
-                length = gr.Slider(label="length", minimum=8, maximum=512, value=16, step=16)
         with gr.Column():
             output_video = gr.Video(value="assets/video/output_out.mp4")
             btn_process = gr.Button("Generate")
             gr.Examples(
                 examples=[
                     ["assets/images/conditional_image_comfyui.png","1girl,yoimiya (genshin impact),fireworks,genshin impact,breasts,female,solo,sarashi,looking at viewer,gloves, shy, crying","assets/video/output_out.mp4", False, 16],
-                    ["assets/images/003.jpeg", "anime girl with long hair and a flower in her hair", "assets/video/003.mp4", True, 128]
+#                    ["assets/images/003.jpeg", "anime girl with long hair and a flower in her hair", "assets/video/003.mp4", True, 128]
                 ],
                 inputs=[reference_image, head_prompt, output_video, use_v2, length],
                 outputs=[output_video],
@@ -249,8 +313,9 @@ with gr.Blocks() as app:
     )
     btn_process.click(
         fn=process_config,
-        inputs=[reference_image, head_prompt, prompt_map, n_prompt, length, use_v2, denoise_strength],
+        inputs=[reference_image, head_prompt, prompt_map, n_prompt, length, use_v2, denoise_strength, v1_duration, ratio],
         outputs=output_video
     )
 
-app.queue().launch(share=True, server_port=4443, server_name="0.0.0.0", root_path="/demo/img-to-video", auth=("sankaku-aiart", "!h&8EEX4AIyKp#f9"))
+# app.queue().launch(share=True, server_port=4449, server_name="0.0.0.0", root_path="/demo/img-to-video", auth=("sankaku-aiart", "!h&8EEX4AIyKp#f9"))
+app.queue().launch(share=False, server_port=4449, server_name="0.0.0.0", debug=True, show_error=True)

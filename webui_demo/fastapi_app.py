@@ -41,15 +41,19 @@ def base64_to_pil(image_base64: str) -> Image.Image:
 
 class ImageData(BaseModel):
     image_base64: str
+    prompt: str = ""
+    length: float = 1.6
+    ratio: str = "square"
 
 @app.post("/animate")
 async def upload_image(data: ImageData):
     # Decode the base64 string
-    client = Client("http://localhost:4443/", serialize=True)
+    client = Client("http://localhost:4449/", serialize=True)
     image_bytes = base64.b64decode(data.image_base64)
     image = base64_to_pil(data.image_base64)
     image.save("temp/fastapi_image.png")
-    prompt = client.predict("temp/fastapi_image.png", fn_index=1)
+    if not prompt:
+        prompt = client.predict("temp/fastapi_image.png", fn_index=1)
     print(prompt)
     dummy_dict = {"data": {"start_frame": ["0"], "prompt": ["high quality, anime, bright color"]}}
     with open("temp/dummy_dict.json", "w") as f:
@@ -62,6 +66,8 @@ async def upload_image(data: ImageData):
         16,
         False,
         0.6,
+        data.length,
+        "square",
         fn_index=2,
     )
 
@@ -79,4 +85,4 @@ async def upload_image(data: ImageData):
 # You can run this app using uvicorn: uvicorn your_file_name:app --reload
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=4444)
+    uvicorn.run(app, host="0.0.0.0", port=4448)
